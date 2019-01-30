@@ -70,7 +70,6 @@ var providerFeePercent = 0.003;
 var accountVolume = {};
 
 var totalVol = 0.0;
-var totalNumTX = 0;
 
 const oneDayOffset = 24 * 60 * 60 * 1000; // in milliseconds
 
