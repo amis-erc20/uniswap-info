@@ -1,10 +1,10 @@
-# Uniswap History
+# Uniswap History Mod
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 Transaction and liquidity pool stats for https://uniswap.io
 
-Check it out live: https://uniswap.info
+This a slightly modified version of https://github.com/Uniswap/uniswap-info.
 
 ### To Start Development
 
@@ -25,5 +25,5 @@ Then run tools/pull_exchanges.py after, passing in infura project id.
 
 # TODO
 
-- Improve mobile experience. (ie Trust browser)
-- Implement time column.
+- Handle transfers of pool tokens
+- Use Uniswap API instead of web3 directly

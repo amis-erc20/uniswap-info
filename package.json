@@ -1,9 +1,10 @@
 {
-  "name": "uniswap",
+  "name": "uniswap-anonmod",
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "axios": "^0.18.0",
     "bignumber.js": "^8.0.1",
     "chart.js": "^2.7.3",
     "gh-pages": "^2.0.1",

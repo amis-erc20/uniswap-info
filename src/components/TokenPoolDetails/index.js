@@ -24,7 +24,7 @@ class TokenPoolDetails extends Component {
 
     var rateDisplay =
       this.props.exchangeRate > 0
-        ? ("1 ETH = " + this.props.exchangeRate.toFixed(4) + " " + this.props.curSymbol)
+        ? ("1 ETH = " + this.props.exchangeRate.toFixed(2) + " " + this.props.curSymbol)
         : "-";
 
     const data = [
@@ -35,7 +35,10 @@ class TokenPoolDetails extends Component {
         poolSize: this.props.curEthPoolTotal,
         poolSizeToken: this.props.curTokenPoolTotal,
         poolShare: this.props.curPoolShare,
+        avgDepRate: this.props.avgDepRate,
         accruedFees: accruedFees,
+        tokenFees: this.props.netCollectedTokenFees,
+        aprDisplay: this.props.aprDisplay,
         rate: rateDisplay
       }
     ];
@@ -47,7 +50,7 @@ class TokenPoolDetails extends Component {
         Header: "Symbol",
         accessor: "symbol",
         Cell: row => <b>{row.value}</b>,
-        maxWidth: 100
+        maxWidth: 60
       },
       {
         Header: "Token",
@@ -56,7 +59,8 @@ class TokenPoolDetails extends Component {
           <a href={tokenLink} rel="noopener noreferrer" target="_blank">
             <div className="truncate">{row.value}</div>
           </a>
-        )
+        ),
+        maxWidth: 65
       },
       {
         Header: "Exchange",
@@ -71,32 +75,55 @@ class TokenPoolDetails extends Component {
               <div className="truncate">{row.value}</div>
             </a>
           </div>
-        )
+        ),
+        maxWidth: 65
       },
       {
         Header: "Rate",
         accessor: "rate",
-        className: "right"
+        className: "right",
+        minWidth: 120,
+        maxWidth: 150
       },
       {
         Header: "Liquidty (ETH)",
         accessor: "poolSize",
-        className: "right"
+        className: "right",
+        maxWidth: 90
       },
       {
         Header: headerTokenLiquidity,
         accessor: "poolSizeToken",
+        className: "right",
+        maxWidth: 100
+      },
+      {
+        Header: "Avg deposit rate",
+        accessor: "avgDepRate",
         className: "right"
       },
       {
         Header: "Your Share",
         accessor: "poolShare",
+        className: "right",
+        maxWidth: 90
+      },
+      {
+        Header: "Your liquidity change",
+        accessor: "accruedFees",
         className: "right"
       },
       {
-        Header: "Your Fees",
-        accessor: "accruedFees",
-        className: "right"
+        Header: "Net (token) / Gross(ETH / Token)",
+        accessor: "tokenFees",
+        className: "right",
+        minWidth: 130
+      },
+      {
+        Header: "APR",
+        accessor: "aprDisplay",
+        className: "right",
+        maxWidth: 70
       }
     ];
 

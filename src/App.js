@@ -10,12 +10,16 @@ import { BigNumber } from "bignumber.js";
 
 import TokenPoolDetails from "./components/TokenPoolDetails";
 import TokenPoolHistory from "./components/TokenPoolHistory";
+import AccountVolumes from "./components/AccountVolumes";
 import TokenDropdown from "./components/TokenDropdown";
 import Header from "./components/Header";
 import Container, { Grid } from "./components/Container";
 import Attribution from "./components/Attribution";
 
 import Uniswap from "./constants/Uniswap.js";
+
+// 5MB only for DAI on 2019-01-30. Need a better solution.
+import Events from "./constants/Events.js";
 
 import { useWeb3Context } from "web3-react/hooks";
 
@@ -24,12 +28,17 @@ import "./App.css";
 
 var app;
 
+// Do we want to use stored events?
+var useCachedEvents = true;
+var logEvents = false;
+
 var web3 = null;
 
 var didRequestData = false;
 var didReceiveData = false;
 
 var eventList = [];
+var accountVolumesList = [];
 
 var volumeDataMap = {}; // how much trading volume keyed by day
 
@@ -41,9 +50,15 @@ var curSymbol = "";
 var curEthPoolTotal = "-";
 var curTokenPoolTotal = "-";
 var curPoolShare = "-";
+var avgDepRate = "-";
 
 var myCollectedEthFees = "";
 var myCollectedTokenFees = "";
+
+var netCollectedTokenFees = "-";
+var brutoCollectedTokenFees = "";
+
+var aprDisplay = "-";
 
 var myAddress = "";
 var tokenAddress = "";
@@ -51,6 +66,13 @@ var tokenAddress = "";
 var exchangeRate = 0;
 
 var providerFeePercent = 0.003;
+
+var accountVolume = {};
+
+var totalVol = 0.0;
+var totalNumTX = 0;
+
+const oneDayOffset = 24 * 60 * 60 * 1000; // in milliseconds
 
 const tokenOptions = [];
 
@@ -127,9 +149,15 @@ class App extends Component {
     curEthPoolTotal = "-";
     curTokenPoolTotal = "-";
     curPoolShare = "-";
+    avgDepRate = "-";
 
-    myCollectedEthFees = "";
-    myCollectedTokenFees = "";
+    myCollectedEthFees = "-";
+    myCollectedTokenFees = "-";
+
+    netCollectedTokenFees = "-";
+    brutoCollectedTokenFees = "-";
+
+    aprDisplay = "-";
 
     exchangeRate = 0;
 
@@ -151,10 +179,10 @@ class App extends Component {
         </div>
 
         <Header>
-          {/* @NOTE: Index 27 of tokenOptions is DAI */}
+          {/* @NOTE: Index 22 of tokenOptions is DAI */}
           <TokenDropdown
             options={tokenOptions}
-            defaultValue={tokenOptions[27]}
+            defaultValue={tokenOptions[22]}
             onChange={this.onTokenSelected}
           />
         </Header>
@@ -168,8 +196,12 @@ class App extends Component {
               curEthPoolTotal={curEthPoolTotal}
               curTokenPoolTotal={curTokenPoolTotal}
               curPoolShare={curPoolShare}
+              avgDepRate={avgDepRate}
               myCollectedEthFees={myCollectedEthFees}
               myCollectedTokenFees={myCollectedTokenFees}
+              netCollectedTokenFees={netCollectedTokenFees}
+              brutoCollectedTokenFees={brutoCollectedTokenFees}
+              aprDisplay={aprDisplay}
               exchangeAddress={exchangeAddress}
             />
 
@@ -181,6 +213,15 @@ class App extends Component {
               eventList={eventList}
               curSymbol={curSymbol}
               myAddress={myAddress}
+              didReceiveData={didReceiveData}
+            />
+          </div>
+
+          <div className="accountVolumes">
+            <AccountVolumes
+              accountVolumesList={accountVolumesList}
+              curSymbol={curSymbol}
+              // myAddress={myAddress}
               didReceiveData={didReceiveData}
             />
           </div>
@@ -235,14 +276,12 @@ const TokenChart = props => {
   var numDaysBackToCalculate = 720;
   var numDaysToShowOnChart = 60;
 
-  var oneDayOffset = 24 * 60 * 60 * 1000; // in milliseconds
-
   var currentEthLiquidity = 0;
   var currentTokenLiquidity = 0;
 
   for (var daysBack = numDaysBackToCalculate; daysBack >= 0; daysBack--) {
     var date = new Date(Date.now() - oneDayOffset * daysBack);
-    
+
     var dateKey = date.getMonth() + "-" + date.getDate() + "-" + date.getFullYear();
 
     // track eth liquidity
@@ -272,7 +311,7 @@ const TokenChart = props => {
     } else {
       volumeData.push(0);
     }
-    
+
     ethLiquidityData.push(currentEthLiquidity.toFixed(4));
 
     tokenLiquidityData.push(currentTokenLiquidity.toFixed(4));
@@ -441,9 +480,20 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
 
   myAddress = web3.account;
 
+  var oldEvents = [];
+  var firstBlock = Uniswap.originBlock;
+
+  if (useCachedEvents && Events[exchangeAddress]) {
+    // Events stores events up until a certain block
+    // TODO now the events are retrieved even if there is no history stored. How to fix?
+    // Better use API
+    oldEvents = Events[exchangeAddress].events;
+    firstBlock = Events[exchangeAddress].lastBlock + 1;
+  }
+
   let options = {
     address: exchangeAddress,
-    fromBlock: Uniswap.originBlock,
+    fromBlock: firstBlock,
     toBlock: "latest"
   };
 
@@ -454,12 +504,27 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
   // 0x0fbf06c058b90cb038a618f8c2acbf6145f8b3570fd1fa56abb8f0f3f05b36e8 = RemoveLiquidity
 
   exchangeContract.getPastEvents("allEvents", options).then(events => {
+    events = oldEvents.concat(events);
+
+    // Download events:
+    if (logEvents) {
+      var file = new Blob([JSON.stringify(events, null, 2)], {type: 'text/plain'});
+      var a = document.createElement("a"),
+              url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = "events.json";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function() {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+      }, 0);
+    }
+
     // only continue if the current exchange is the original symbol we requested
     if (curSymbol !== tokenSymbol) {
       return;
     }
-
-    console.log(events);
 
     let eventListTemp = [];
 
@@ -467,19 +532,30 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
     let curTokenTotal = 0;
 
     curPoolShare = 0.0;
+    avgDepRate = 0.0;
 
     let curPoolShareDisplay = 0.0;
 
     let numMyShareTokens = new BigNumber(0);
     let numMintedShareTokens = new BigNumber(0);
 
-    let numMyDepositedEth = 0.0;
-    let numMyDepositedTokens = 0.0;
+    let numMyDepositedEth = 0;
+    let numMyDepositedTokens = 0;
+
+    let earnedEthFee = 0.0;
+    let earnedTokenFee = 0.0;
+
+    let netFees = 0.0;
+
+    // Date of the first liquidity added by an address
+    let firstDepBlock = "";
 
     let lastEventObj;
 
     events.forEach(e => {
       let eventType = e.event;
+      let ethFee = 0.0;
+      let tokenFee = 0.0;
 
       let eventObj = {
         type: eventType,
@@ -494,6 +570,7 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
         tx: e.transactionHash,
         provider: e.returnValues.provider,
         block: e.blockNumber,
+        time: "",
 
         liquidtyProviderFee: "-",
 
@@ -511,6 +588,11 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
         if (eventObj.provider.toUpperCase() === myAddress.toUpperCase()) {
           numMyDepositedEth += eth;
           numMyDepositedTokens += tokens;
+
+          // TODO Calculate the first date of deposit for an address
+          if (!firstDepBlock) {
+            firstDepBlock = eventObj.block;
+          }
         }
       } else if (eventType === "RemoveLiquidity") {
         eth = -e.returnValues.eth_amount / 1e18;
@@ -522,30 +604,52 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
           numMyDepositedEth += eth;
           numMyDepositedTokens += tokens;
         }
-      } else if (eventType === "TokenPurchase") {
-        eth = e.returnValues.eth_sold / 1e18;
-        tokens = -e.returnValues.tokens_bought / tokenDecimals;
-
+      } else if (eventType === "TokenPurchase" || eventType === "EthPurchase") {
         eventObj.provider = e.returnValues.buyer;
-        eventObj.type = "Token Purchase";
 
-        eventObj.volume = eth;
+        // Create an empty object per account if it does not exist
+        if (!accountVolume[eventObj.provider]){
+          accountVolume[eventObj.provider] = {
+            eth: 0.0,
+            tokens: 0.0,
+            numTx: 0
+          }
+        }
 
-        // calculate the eth fee that liquidity providers will receive
-        eventObj.liquidtyProviderFee =
-          (eth * providerFeePercent).toFixed(4) + " ETH";
-      } else if (eventType === "EthPurchase") {
-        eth = -e.returnValues.eth_bought / 1e18;
-        tokens = e.returnValues.tokens_sold / tokenDecimals;
+        accountVolume[eventObj.provider].numTx++;
 
-        eventObj.provider = e.returnValues.buyer;
-        eventObj.type = "Eth Purchase";
+        if (eventType === "TokenPurchase"){
+          eth = e.returnValues.eth_sold / 1e18;
+          tokens = -e.returnValues.tokens_bought / tokenDecimals;
 
-        eventObj.volume = -eth;
+          eventObj.type = "Token Purchase";
 
-        // calculate the token fee that liquidity providers will receive
-        eventObj.liquidtyProviderFee =
-          (tokens * providerFeePercent).toFixed(4) + " " + tokenSymbol;
+          eventObj.volume = eth;
+
+          accountVolume[eventObj.provider].eth += eth;
+          accountVolume[eventObj.provider].tokens += -tokens;
+
+          // calculate the eth fee that liquidity providers will receive
+          ethFee = eth * providerFeePercent;
+          eventObj.liquidtyProviderFee = ethFee.toFixed(4) + " ETH";
+        } else if (eventType === "EthPurchase") {
+          eth = -e.returnValues.eth_bought / 1e18;
+          tokens = e.returnValues.tokens_sold / tokenDecimals;
+
+          eventObj.type = "Eth Purchase";
+
+          eventObj.volume = -eth;
+
+          accountVolume[eventObj.provider].eth += -eth;
+          accountVolume[eventObj.provider].tokens += tokens;
+
+          // calculate the token fee that liquidity providers will receive
+          tokenFee = tokens * providerFeePercent;
+          eventObj.liquidtyProviderFee = tokenFee.toFixed(4) + " " + tokenSymbol;
+        }
+
+        // add eth volume to total volume
+        totalVol += eventObj.volume;
       } else if (eventType === "Transfer") {
         // Track share tokens
         let sender = e.returnValues[0];
@@ -561,13 +665,15 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
           if (sender.toUpperCase() === myAddress.toUpperCase()) {
             numMyShareTokens = numMyShareTokens.minus(numShareTokens);
           }
-        } else {
+        } else if (sender === "0x0000000000000000000000000000000000000000"){
           // mint share tokens
           numMintedShareTokens = numMintedShareTokens.plus(numShareTokens);
 
           if (receiver.toUpperCase() === myAddress.toUpperCase()) {
             numMyShareTokens = numMyShareTokens.plus(numShareTokens);
           }
+        } else {
+          console.log("Transfer of pool tokens in block: " + eventObj.block + ", hash: " + eventObj.tx);
         }
 
         // update current pool share. take users's share tokens and divide by total minted share tokens
@@ -582,7 +688,7 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
         }
 
         // get a percentage from the pool share
-        curPoolShareDisplay = (curPoolShare * 100).toFixed(2);
+        curPoolShareDisplay = (curPoolShare * 100).toFixed(6);
 
         // if the user's pool share is 0, don't show a number
         if (Number(curPoolShareDisplay) === 0.0) {
@@ -596,6 +702,10 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
 
         return;
       }
+
+      // Add new fees to total fees
+      earnedEthFee += ethFee * curPoolShare;
+      earnedTokenFee += tokenFee * curPoolShare;
 
       // save a reference to the last event object (transfer events follow add/remove liquidity)
       lastEventObj = eventObj;
@@ -624,11 +734,17 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
     let myEstimatedAccruedEthFees = (
       curPoolShare * curEthTotal -
       numMyDepositedEth
-    ).toFixed(4);
+    )
     let myEstimatedAccruedTokenFees = (
       curPoolShare * curTokenTotal -
       numMyDepositedTokens
-    ).toFixed(4);
+    )
+
+    exchangeRate = GetEthToTokenPrice(curEthTotal, curTokenTotal);
+    netFees = myEstimatedAccruedEthFees*exchangeRate + myEstimatedAccruedTokenFees;
+
+    myEstimatedAccruedEthFees = myEstimatedAccruedEthFees.toFixed(2);
+    myEstimatedAccruedTokenFees = myEstimatedAccruedTokenFees.toFixed(2);
 
     if (Number(myEstimatedAccruedEthFees) === 0) {
       myEstimatedAccruedEthFees = "";
@@ -641,7 +757,7 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
     } else {
       if (myEstimatedAccruedEthFees.length === 0) {
         myEstimatedAccruedTokenFees =
-          myEstimatedAccruedTokenFees + " " + tokenSymbol;
+          myEstimatedAccruedTokenFees + " ";
       } else {
         myEstimatedAccruedTokenFees =
           ", " + myEstimatedAccruedTokenFees + " " + tokenSymbol;
@@ -659,12 +775,55 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
     myCollectedEthFees = myEstimatedAccruedEthFees;
     myCollectedTokenFees = myEstimatedAccruedTokenFees;
 
+    //Calculate average rate at which liquidity was put in
+    let depRate = GetEthToTokenPrice(numMyDepositedEth, numMyDepositedTokens);
+    avgDepRate = depRate.toFixed(2) + " " + tokenSymbol + " / ETH";
+
+    //calculate the token value of the deposited liquidity
+    let tokenValueDep = numMyDepositedEth*depRate + numMyDepositedTokens;
+
+    netCollectedTokenFees = netFees.toFixed(2) + " " + tokenSymbol + ", ";
+    netCollectedTokenFees += earnedEthFee.toFixed(2) + " ETH, ";
+    netCollectedTokenFees += earnedTokenFee.toFixed(2) + " "+ tokenSymbol;
+
+    // find the date with the first deposit block of the account
+    web3.web3js.eth.getBlock(firstDepBlock).then(function(block) {
+      //Timestamp of a block is in seconds
+      let firstDepDate = new Date(block.timestamp*1000);
+      let timeSinceDepDays = (new Date().getTime() - firstDepDate.getTime())/oneDayOffset;
+
+      let apr = 365.0/timeSinceDepDays*100*netFees/tokenValueDep;
+
+      aprDisplay = apr.toFixed(2) + "%";
+
+      // Update state to include apr
+      app.setState({});
+    });
+
+    // Sort account volumes from highest to lowest
+    accountVolumesList = [];
+
+    for (let account in accountVolume){
+      accountVolumesList.push({
+        "account": account,
+        "eth": accountVolume[account].eth,
+        "tokens": accountVolume[account].tokens,
+        "numTx": accountVolume[account].numTx,
+        "volPercentage": (accountVolume[account].eth/totalVol*100).toFixed(2) + "%"
+      });
+      //totalVol += accountVolume[account].eth;
+    }
+
+    accountVolumesList.sort((a, b) => {
+      return b.eth - a.eth;
+    });
+
     // update our state
     app.setState({});
 
-    if (eventListTemp.length > 0) {
-      var recentEvent = eventListTemp[0];
-      var oldestEvent = eventListTemp[eventListTemp.length - 1];
+    if (eventList.length > 0) {
+      var recentEvent = eventList[0];
+      var oldestEvent = eventList[eventList.length - 1];
 
       var dateKeyToVolumeMap = {};
 
@@ -743,8 +902,6 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
           tokenLiquidityDataMap = dateKeyToTokenLiquidityMap;
 
           didReceiveData = true;
-
-          exchangeRate = GetEthToTokenPrice(curEthTotal, curTokenTotal);
 
           app.setState({});
         });

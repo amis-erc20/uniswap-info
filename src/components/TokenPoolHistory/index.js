@@ -35,7 +35,7 @@ class TokenPoolHistory extends Component {
         block: Number(e.block),
         blockLink: blockLink,
 
-        time: "-",
+        time: e.time,
 
         address: e.provider,
         addressLink: providerLink,
@@ -140,8 +140,8 @@ class TokenPoolHistory extends Component {
         data={data}
         columns={columns}
         showPageSizeOptions={false}
-        defaultPageSize={10}
-        minRows={10}
+        defaultPageSize={5}
+        minRows={5}
         resizable={false}
       />
     );
