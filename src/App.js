@@ -479,6 +479,7 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
 
   myAddress = web3.account;
 
+  accountVolume = {};
   var oldEvents = [];
   var firstBlock = Uniswap.originBlock;
 
