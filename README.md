@@ -50,6 +50,7 @@ First run tools/crawl_exchange_logs.py passing in origin block and infura projec
 Then run tools/pull_exchanges.py after, passing in infura project id.
 
 # TODO
+- BUGFIX: Show zero APR when no liquidity is provided
 - Handle transfers of pool tokens
 - Use Uniswap API instead of web3 directly
 - Add more data like total exchange volume, total transaction count, overall transaction size.
