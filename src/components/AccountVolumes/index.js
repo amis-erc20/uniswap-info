@@ -28,6 +28,7 @@ class AccountVolumes extends Component {
          totalToken: Number(e.tokens).toFixed(4),
 
          txCount: e.numTx,
+         avgTxSize: Number(e.eth/e.numTx).toFixed(2),
          volPercentage: e.volPercentage
       };
       data.push(account);
@@ -71,6 +72,11 @@ class AccountVolumes extends Component {
       {
         Header: "Total transaction count",
         accessor: "txCount",
+        className: "right"
+      },
+      {
+        Header: "Average Transaction size (ETH)",
+        accessor: "avgTxSize",
         className: "right"
       }
     ];
