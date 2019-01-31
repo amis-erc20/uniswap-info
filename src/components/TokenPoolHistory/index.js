@@ -143,6 +143,7 @@ class TokenPoolHistory extends Component {
         defaultPageSize={5}
         minRows={5}
         resizable={false}
+        showPageSizeOptions={true}
       />
     );
   }

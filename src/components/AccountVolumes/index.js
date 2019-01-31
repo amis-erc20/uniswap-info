@@ -90,6 +90,7 @@ class AccountVolumes extends Component {
         defaultPageSize={5}
         minRows={5}
         resizable={false}
+        showPageSizeOptions={true}
       />
     );
   }
