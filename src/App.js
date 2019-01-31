@@ -300,9 +300,9 @@ const TokenChart = props => {
     labels.push(
       monthNames[date.getMonth()] +
         " " +
-        date.getDate() +
-        ", " +
-        date.getFullYear()
+        date.getDate()// +
+        // ", " +
+        // date.getFullYear()
     );
 
     if (dateKey in volumeDataMap) {
