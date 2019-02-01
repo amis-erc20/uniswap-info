@@ -8,7 +8,8 @@ This a slightly modified version of https://github.com/Uniswap/uniswap-info.
 
 ### Notes
 ###### DAI event history
-In [src/constants/Events.js](src/constants/Events.js) contract events on the DAI/ETH exchange are stored up until a certain block. Right now (31-01-2019) this file is around 5MB. In this way the page loads faster for the DAI/ETH pair. No data for other pairs is stored or used.
+~~In [src/constants/Events.js](src/constants/Events.js) contract events on the DAI/ETH exchange are stored up until a certain block. Right now (31-01-2019) this file is around 5MB. In this way the page loads faster for the DAI/ETH pair. No data for other pairs is stored or used.~~
+I removed the static data in `Events.js`. The site now loads the events in smaller chunks. Reloading the site will trigger this. Reselecting a token will use the existing history.
 
 Using the new API that is being built is essential to keep being able to load the history so a big priority.
 
