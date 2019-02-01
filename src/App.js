@@ -25,10 +25,6 @@ import "./App.css";
 
 var app;
 
-// Do we want to use stored events?
-var useCachedEvents = true;
-var logEvents = false;
-
 var web3 = null;
 
 var didRequestData = false;
