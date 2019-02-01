@@ -18,9 +18,6 @@ import Attribution from "./components/Attribution";
 
 import Uniswap from "./constants/Uniswap.js";
 
-// 5MB only for DAI on 2019-01-30. Need a better solution.
-import Events from "./constants/Events.js";
-
 import { useWeb3Context } from "web3-react/hooks";
 
 import "typeface-inter";
