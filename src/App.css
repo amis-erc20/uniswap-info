@@ -43,6 +43,7 @@ div.rt-tr {
   bottom: 0;
   display: grid;
   place-items: center;
+  font-size: 40px;
 }
 
 .TokenDetails {
@@ -59,4 +60,18 @@ div.rt-tr {
   top:360px;
   bottom:50px;
   width:calc(100% - 25px); */
+}
+
+#progress {
+  border-radius: 5px;
+  width: 80%;
+  background-color: rgb(200, 200, 200, 0.2);
+}
+
+#loadingBar {
+  border-radius: inherit;
+  height: 30px;
+  width: 0%;
+  background-color: #000;
+
 }

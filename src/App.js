@@ -18,19 +18,12 @@ import Attribution from "./components/Attribution";
 
 import Uniswap from "./constants/Uniswap.js";
 
-// 5MB only for DAI on 2019-01-30. Need a better solution.
-import Events from "./constants/Events.js";
-
 import { useWeb3Context } from "web3-react/hooks";
 
 import "typeface-inter";
 import "./App.css";
 
 var app;
-
-// Do we want to use stored events?
-var useCachedEvents = true;
-var logEvents = false;
 
 var web3 = null;
 
@@ -69,6 +62,9 @@ var providerFeePercent = 0.003;
 
 var accountVolume = {};
 
+var oldEventsExchange = {};
+var firstBlock = Uniswap.originBlock;
+
 var totalVol = 0.0;
 
 const oneDayOffset = 24 * 60 * 60 * 1000; // in milliseconds
@@ -86,6 +82,13 @@ function GetEthToTokenPrice(ethReserve, tokenReserve) {
   } else {
     return 0;
   }
+}
+
+function changeBar(firstBlock, currentBlock, latestBlock) {
+  var loadingBar = document.getElementById("loadingBar");
+  let width = Math.round((currentBlock-firstBlock)/(latestBlock-firstBlock)*100);
+  // console.log(width);
+  loadingBar.style.width = width + '%';
 }
 
 class App extends Component {
@@ -480,22 +483,6 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
   myAddress = web3.account;
 
   accountVolume = {};
-  var oldEvents = [];
-  var firstBlock = Uniswap.originBlock;
-
-  if (useCachedEvents && Events[exchangeAddress]) {
-    // Events stores events up until a certain block
-    // TODO now the events are retrieved even if there is no history stored. How to fix?
-    // Better use API
-    oldEvents = Events[exchangeAddress].events;
-    firstBlock = Events[exchangeAddress].lastBlock + 1;
-  }
-
-  let options = {
-    address: exchangeAddress,
-    fromBlock: firstBlock,
-    toBlock: "latest"
-  };
 
   // topics
   // 0xcd60aa75dea3072fbc07ae6d7d856b5dc5f4eee88854f5b4abf7b680ef8bc50f = TokenPurchase
@@ -503,23 +490,57 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
   // 0x7f4091b46c33e918a0f3aa42307641d17bb67029427a5369e54b353984238705 = EthPurchase
   // 0x0fbf06c058b90cb038a618f8c2acbf6145f8b3570fd1fa56abb8f0f3f05b36e8 = RemoveLiquidity
 
-  exchangeContract.getPastEvents("allEvents", options).then(events => {
-    events = oldEvents.concat(events);
+  let latestBlock = 0;
 
-    // Download events:
-    if (logEvents) {
-      var file = new Blob([JSON.stringify(events, null, 2)], {type: 'text/plain'});
-      var a = document.createElement("a"),
-              url = URL.createObjectURL(file);
-      a.href = url;
-      a.download = "events.json";
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function() {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-      }, 0);
-    }
+  let blockStep = 29999; // Number of blocks in each chunk
+
+  if (!oldEventsExchange[exchangeAddress]){
+    firstBlock = Uniswap.originBlock;
+    let oldEvents = [];
+
+    oldEventsExchange[exchangeAddress] = {"lastBlock": firstBlock, "events": oldEvents};
+  }
+  let blockNum = oldEventsExchange[exchangeAddress].lastBlock + 1;
+  let oldEvents = oldEventsExchange[exchangeAddress].events;
+
+  async function getEvents() {
+    latestBlock = await web3.web3js.eth.getBlockNumber();
+    console.log("Latest block:" + latestBlock);
+
+    try {
+        while (blockNum < latestBlock ){
+          // let loadingMessage = "Block number: " + blockNum + ", still " + Number(latestBlock-blockNum) + " blocks to go.";
+          // document.getElementById("loadingPar").innerHTML = loadingMessage;
+          changeBar(firstBlock, blockNum, latestBlock);
+          // console.log(blockNum, latestBlock);
+          let toBlock;
+
+          if (blockNum + blockStep < latestBlock) {
+            toBlock = blockNum + blockStep;
+          } else {
+            toBlock = latestBlock
+          }
+
+          let options = {
+            address: exchangeAddress,
+            fromBlock: blockNum,
+            toBlock: toBlock
+          };
+
+          let events = await exchangeContract.getPastEvents("allEvents", options);
+          oldEvents = oldEvents.concat(events);
+          blockNum += blockStep + 1;
+        }// now process r2
+        return oldEvents;     // this will be the resolved value of the returned promise
+      } catch(e) {
+        console.log(e);
+        throw e;      // let caller know the promise was rejected with this reason
+      }
+  };
+
+  getEvents().then(events => {
+    oldEventsExchange[exchangeAddress].lastBlock = latestBlock;
+    oldEventsExchange[exchangeAddress].events = events;
 
     // only continue if the current exchange is the original symbol we requested
     if (curSymbol !== tokenSymbol) {
