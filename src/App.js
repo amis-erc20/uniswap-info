@@ -162,6 +162,7 @@ class App extends Component {
     aprDisplay = "-";
 
     exchangeRate = 0;
+    totalVol = 0.0;
 
     app.setState({});
 
