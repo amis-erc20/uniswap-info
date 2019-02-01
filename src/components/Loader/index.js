@@ -6,7 +6,7 @@ import React from "react";
 
 const Loader = () => (
   <div className="LoadingWrapper">
-    <img alt="Loading" src="./loading3.gif" />
+    <p id="loadingBar"></p>
   </div>
 );
 

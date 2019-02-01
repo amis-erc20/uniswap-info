@@ -485,7 +485,7 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
 
   let latestBlock = 0;
 
-  let blockStep = 10000; // Number of blocks in each chunk
+  let blockStep = 29999; // Number of blocks in each chunk
 
   if (!oldEventsExchange[exchangeAddress]){
     firstBlock = Uniswap.originBlock;
@@ -502,6 +502,9 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
 
     try {
         while (blockNum < latestBlock ){
+          let loadingMessage =
+              "Block number: " + blockNum + ", still " + Number(latestBlock-blockNum) + " blocks to go.";
+          document.getElementById("loadingBar").innerHTML = loadingMessage;
           console.log(blockNum, latestBlock);
           let toBlock;
 
