@@ -6,7 +6,9 @@ import React from "react";
 
 const Loader = () => (
   <div className="LoadingWrapper">
-    <p id="loadingBar"></p>
+    <div id="progress">
+      <div id="loadingBar"></div>
+    </div>
   </div>
 );
 

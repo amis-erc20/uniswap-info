@@ -61,3 +61,17 @@ div.rt-tr {
   bottom:50px;
   width:calc(100% - 25px); */
 }
+
+#progress {
+  border-radius: 5px;
+  width: 80%;
+  background-color: rgb(200, 200, 200, 0.2);
+}
+
+#loadingBar {
+  border-radius: inherit;
+  height: 30px;
+  width: 0%;
+  background-color: #000;
+
+}

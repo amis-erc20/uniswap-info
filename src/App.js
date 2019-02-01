@@ -84,6 +84,13 @@ function GetEthToTokenPrice(ethReserve, tokenReserve) {
   }
 }
 
+function changeBar(firstBlock, currentBlock, latestBlock) {
+  var loadingBar = document.getElementById("loadingBar");
+  let width = Math.round((currentBlock-firstBlock)/(latestBlock-firstBlock)*100);
+  // console.log(width);
+  loadingBar.style.width = width + '%';
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -502,10 +509,10 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
 
     try {
         while (blockNum < latestBlock ){
-          let loadingMessage =
-              "Block number: " + blockNum + ", still " + Number(latestBlock-blockNum) + " blocks to go.";
-          document.getElementById("loadingBar").innerHTML = loadingMessage;
-          console.log(blockNum, latestBlock);
+          // let loadingMessage = "Block number: " + blockNum + ", still " + Number(latestBlock-blockNum) + " blocks to go.";
+          // document.getElementById("loadingPar").innerHTML = loadingMessage;
+          changeBar(firstBlock, blockNum, latestBlock);
+          // console.log(blockNum, latestBlock);
           let toBlock;
 
           if (blockNum + blockStep < latestBlock) {
