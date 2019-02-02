@@ -139,11 +139,10 @@ class TokenPoolHistory extends Component {
         className="TokenPoolHistory -striped"
         data={data}
         columns={columns}
-        showPageSizeOptions={false}
+        showPageSizeOptions={true}
         defaultPageSize={5}
         minRows={5}
         resizable={false}
-        showPageSizeOptions={true}
       />
     );
   }

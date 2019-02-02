@@ -5,14 +5,12 @@
 import React, { Component } from "react";
 import ReactTable from "react-table";
 
-import Loader from "../Loader";
-
 import "./AccountVolumes.css";
 
 class AccountVolumes extends Component {
   render() {
     if (this.props.didReceiveData === false) {
-      return <Loader />;
+      return <div />;
     }
 
     const data = [];
@@ -86,11 +84,10 @@ class AccountVolumes extends Component {
         className="AccountVolumes -striped"
         data={data}
         columns={columns}
-        showPageSizeOptions={false}
+        showPageSizeOptions={true}
         defaultPageSize={5}
         minRows={5}
         resizable={false}
-        showPageSizeOptions={true}
       />
     );
   }
