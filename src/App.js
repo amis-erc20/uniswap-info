@@ -55,6 +55,7 @@ var aprDisplay = "-";
 
 var myAddress = "";
 var tokenAddress = "";
+var tokenLoading = false;
 
 var exchangeRate = 0;
 
@@ -131,6 +132,9 @@ class App extends Component {
   }
 
   onTokenSelected(option) {
+    if (tokenLoading) {
+      return
+    }
     var symbol = option.value;
 
     console.log(symbol);
@@ -504,13 +508,15 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
   let blockNum = oldEventsExchange[exchangeAddress].lastBlock + 1;
   let oldEvents = oldEventsExchange[exchangeAddress].events;
 
+  tokenLoading = true;
+
   async function getEvents() {
     latestBlock = await web3.web3js.eth.getBlockNumber();
     console.log("Latest block:" + latestBlock);
 
     try {
         while (blockNum < latestBlock ){
-          // let loadingMessage = "Block number: " + blockNum + ", still " + Number(latestBlock-blockNum) + " blocks to go.";
+          //let loadingMessage = "Block number: " + blockNum + ", still " + Number(latestBlock-blockNum) + " blocks to go.";
           // document.getElementById("loadingPar").innerHTML = loadingMessage;
           changeBar(firstBlock, blockNum, latestBlock);
           // console.log(blockNum, latestBlock);
@@ -529,9 +535,10 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
           };
 
           let events = await exchangeContract.getPastEvents("allEvents", options);
+
           oldEvents = oldEvents.concat(events);
           blockNum += blockStep + 1;
-        }// now process r2
+        }
         return oldEvents;     // this will be the resolved value of the returned promise
       } catch(e) {
         console.log(e);
@@ -540,6 +547,7 @@ const retrieveData = (tokenSymbol, exchangeAddress) => {
   };
 
   getEvents().then(events => {
+    tokenLoading = false;
     oldEventsExchange[exchangeAddress].lastBlock = latestBlock;
     oldEventsExchange[exchangeAddress].events = events;
 
