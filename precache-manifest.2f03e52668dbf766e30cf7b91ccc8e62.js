@@ -4,12 +4,12 @@ self.__precacheManifest = [
     "url": "/uniswap-info/static/media/Inter-UI-LightItalic-BETA.81085c19.woff"
   },
   {
-    "revision": "30742ad3d7669592b366",
+    "revision": "c514453abbb0dd748e23",
     "url": "/uniswap-info/static/css/main.a2d3f81e.chunk.css"
   },
   {
-    "revision": "baac7065b8bed11f146cc52b108f29a8",
-    "url": "/uniswap-info/static/media/Inter-UI-Black.baac7065.woff"
+    "revision": "f7ec46fa4962accb79c714e2f7fa0541",
+    "url": "/uniswap-info/static/media/Inter-UI-italic.var.f7ec46fa.woff2"
   },
   {
     "revision": "9b986092b88c16a843b0",
@@ -24,40 +24,40 @@ self.__precacheManifest = [
     "url": "/uniswap-info/static/js/2.78987c28.chunk.js"
   },
   {
-    "revision": "f7ec46fa4962accb79c714e2f7fa0541",
-    "url": "/uniswap-info/static/media/Inter-UI-italic.var.f7ec46fa.woff2"
+    "revision": "fc804a83ca24047c8385cfbf8d17cd86",
+    "url": "/uniswap-info/static/media/Inter-UI-upright.var.fc804a83.woff2"
   },
   {
     "revision": "97d9d6939fe8506ee44d",
     "url": "/uniswap-info/static/js/3.97d9d693.chunk.js"
   },
   {
-    "revision": "fc804a83ca24047c8385cfbf8d17cd86",
-    "url": "/uniswap-info/static/media/Inter-UI-upright.var.fc804a83.woff2"
+    "revision": "b10b8c637bae1d88de5e0b7b1b8d2d55",
+    "url": "/uniswap-info/static/media/Inter-UI-BlackItalic.b10b8c63.woff"
   },
   {
     "revision": "1af869ee131b6481ea2c",
     "url": "/uniswap-info/static/js/4.1af869ee.chunk.js"
   },
   {
-    "revision": "b10b8c637bae1d88de5e0b7b1b8d2d55",
-    "url": "/uniswap-info/static/media/Inter-UI-BlackItalic.b10b8c63.woff"
+    "revision": "046ace3e208c2245a78f96eaad82b727",
+    "url": "/uniswap-info/static/media/Inter-UI-BlackItalic.046ace3e.woff2"
   },
   {
     "revision": "d643fa77a7319939132a",
     "url": "/uniswap-info/static/js/5.d643fa77.chunk.js"
   },
   {
-    "revision": "07e0d78f1bf3d7e5e23613a6a8997e18",
-    "url": "/uniswap-info/static/media/Inter-UI-SemiBold.07e0d78f.woff2"
+    "revision": "baac7065b8bed11f146cc52b108f29a8",
+    "url": "/uniswap-info/static/media/Inter-UI-Black.baac7065.woff"
   },
   {
     "revision": "61e796b418689d2f31aa",
     "url": "/uniswap-info/static/js/6.61e796b4.chunk.js"
   },
   {
-    "revision": "046ace3e208c2245a78f96eaad82b727",
-    "url": "/uniswap-info/static/media/Inter-UI-BlackItalic.046ace3e.woff2"
+    "revision": "9c1cf88664638d2df51bf1de650937cb",
+    "url": "/uniswap-info/static/media/Inter-UI-Black.9c1cf886.woff2"
   },
   {
     "revision": "46e9f8633581269365d8",
@@ -80,16 +80,20 @@ self.__precacheManifest = [
     "url": "/uniswap-info/static/media/Inter-UI-ThinItalic-BETA.ac033c05.woff2"
   },
   {
-    "revision": "a5562927d6e6e32be6830f466cdac586",
-    "url": "/uniswap-info/static/media/Inter-UI-ExtraLight-BETA.a5562927.woff2"
-  },
-  {
     "revision": "215447418666d38ecdb5735d81b4dc0e",
     "url": "/uniswap-info/static/media/Inter-UI-ThinItalic-BETA.21544741.woff"
   },
   {
+    "revision": "a5562927d6e6e32be6830f466cdac586",
+    "url": "/uniswap-info/static/media/Inter-UI-ExtraLight-BETA.a5562927.woff2"
+  },
+  {
     "revision": "02bc4a5ad6b9cf54b07518b77e79857f",
     "url": "/uniswap-info/static/media/Inter-UI-ExtraLight-BETA.02bc4a5a.woff"
+  },
+  {
+    "revision": "a81c572e2558d0840a40bd741aba8b17",
+    "url": "/uniswap-info/static/media/Inter-UI-ExtraLightItalic-BETA.a81c572e.woff"
   },
   {
     "revision": "ae3e740101b501daeee0a1e9d4d09f94",
@@ -100,10 +104,6 @@ self.__precacheManifest = [
     "url": "/uniswap-info/static/media/Inter-UI-Light-BETA.125b2c92.woff2"
   },
   {
-    "revision": "a81c572e2558d0840a40bd741aba8b17",
-    "url": "/uniswap-info/static/media/Inter-UI-ExtraLightItalic-BETA.a81c572e.woff"
-  },
-  {
     "revision": "a50b90e3220bf832dbe60bf476092c5e",
     "url": "/uniswap-info/static/media/Inter-UI-Light-BETA.a50b90e3.woff"
   },
@@ -112,8 +112,8 @@ self.__precacheManifest = [
     "url": "/uniswap-info/static/media/Inter-UI-LightItalic-BETA.4b0645d2.woff2"
   },
   {
-    "revision": "30742ad3d7669592b366",
-    "url": "/uniswap-info/static/js/main.30742ad3.chunk.js"
+    "revision": "c514453abbb0dd748e23",
+    "url": "/uniswap-info/static/js/main.c514453a.chunk.js"
   },
   {
     "revision": "2eb9a2a909f7d3e492ff66b38ffdf760",
@@ -148,6 +148,10 @@ self.__precacheManifest = [
     "url": "/uniswap-info/static/media/Inter-UI-MediumItalic.c5a27379.woff"
   },
   {
+    "revision": "07e0d78f1bf3d7e5e23613a6a8997e18",
+    "url": "/uniswap-info/static/media/Inter-UI-SemiBold.07e0d78f.woff2"
+  },
+  {
     "revision": "c1c8fa3ccd7171d566f18ffdcff96a02",
     "url": "/uniswap-info/static/media/Inter-UI-SemiBold.c1c8fa3c.woff"
   },
@@ -156,20 +160,20 @@ self.__precacheManifest = [
     "url": "/uniswap-info/static/media/Inter-UI-SemiBoldItalic.7f4e06f5.woff2"
   },
   {
-    "revision": "e4746d870a18fb5fcd54cbc488b1a28c",
-    "url": "/uniswap-info/static/media/Inter-UI-Bold.e4746d87.woff2"
+    "revision": "52b86f26ef76b8f81244968e3431fa98",
+    "url": "/uniswap-info/static/media/Inter-UI-SemiBoldItalic.52b86f26.woff"
   },
   {
-    "revision": "71cc82eb622e1fcfb2b55d07db74c145",
-    "url": "/uniswap-info/static/media/Inter-UI-BoldItalic.71cc82eb.woff2"
+    "revision": "e4746d870a18fb5fcd54cbc488b1a28c",
+    "url": "/uniswap-info/static/media/Inter-UI-Bold.e4746d87.woff2"
   },
   {
     "revision": "768402cf585ec2fe52c01f152b043242",
     "url": "/uniswap-info/static/media/Inter-UI-Bold.768402cf.woff"
   },
   {
-    "revision": "52b86f26ef76b8f81244968e3431fa98",
-    "url": "/uniswap-info/static/media/Inter-UI-SemiBoldItalic.52b86f26.woff"
+    "revision": "71cc82eb622e1fcfb2b55d07db74c145",
+    "url": "/uniswap-info/static/media/Inter-UI-BoldItalic.71cc82eb.woff2"
   },
   {
     "revision": "38a313cff9c3d25e22537692a0cce413",
@@ -190,10 +194,6 @@ self.__precacheManifest = [
   {
     "revision": "0b86fa9f52c56a34ab4f0e57e3f9d2a6",
     "url": "/uniswap-info/static/media/Inter-UI-ExtraBoldItalic.0b86fa9f.woff"
-  },
-  {
-    "revision": "9c1cf88664638d2df51bf1de650937cb",
-    "url": "/uniswap-info/static/media/Inter-UI-Black.9c1cf886.woff2"
   },
   {
     "revision": "46e9f8633581269365d8",
@@ -224,7 +224,7 @@ self.__precacheManifest = [
     "url": "/uniswap-info/static/css/1.926f7d31.chunk.css"
   },
   {
-    "revision": "ab336bca86d207b8bce01a55578748ca",
+    "revision": "832c4046742b8032b97757e016c4138e",
     "url": "/uniswap-info/index.html"
   }
 ];

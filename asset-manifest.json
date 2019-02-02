@@ -1,7 +1,7 @@
 {
   "main.css": "/uniswap-info/static/css/main.a2d3f81e.chunk.css",
-  "main.js": "/uniswap-info/static/js/main.30742ad3.chunk.js",
-  "main.js.map": "/uniswap-info/static/js/main.30742ad3.chunk.js.map",
+  "main.js": "/uniswap-info/static/js/main.c514453a.chunk.js",
+  "main.js.map": "/uniswap-info/static/js/main.c514453a.chunk.js.map",
   "static/css/1.926f7d31.chunk.css": "/uniswap-info/static/css/1.926f7d31.chunk.css",
   "static/js/1.9b986092.chunk.js": "/uniswap-info/static/js/1.9b986092.chunk.js",
   "static/js/1.9b986092.chunk.js.map": "/uniswap-info/static/js/1.9b986092.chunk.js.map",
@@ -28,13 +28,13 @@
   "static/media/inter-ui.css": "/uniswap-info/static/media/Inter-UI-Thin-BETA.fd643b92.woff",
   "static/css/main.a2d3f81e.chunk.css.map": "/uniswap-info/static/css/main.a2d3f81e.chunk.css.map",
   "static/css/1.926f7d31.chunk.css.map": "/uniswap-info/static/css/1.926f7d31.chunk.css.map",
-  "static/css/2.926f7d31.chunk.css.map": "/uniswap-info/static/css/2.926f7d31.chunk.css.map",
   "static/css/4.926f7d31.chunk.css.map": "/uniswap-info/static/css/4.926f7d31.chunk.css.map",
   "static/css/3.926f7d31.chunk.css.map": "/uniswap-info/static/css/3.926f7d31.chunk.css.map",
+  "static/css/2.926f7d31.chunk.css.map": "/uniswap-info/static/css/2.926f7d31.chunk.css.map",
   "static/css/5.926f7d31.chunk.css.map": "/uniswap-info/static/css/5.926f7d31.chunk.css.map",
   "static/css/6.926f7d31.chunk.css.map": "/uniswap-info/static/css/6.926f7d31.chunk.css.map",
   "static/css/7.3e27776b.chunk.css.map": "/uniswap-info/static/css/7.3e27776b.chunk.css.map",
   "index.html": "/uniswap-info/index.html",
-  "precache-manifest.0bfccfb3019ed42932c12a8e00ad9b18.js": "/uniswap-info/precache-manifest.0bfccfb3019ed42932c12a8e00ad9b18.js",
+  "precache-manifest.2f03e52668dbf766e30cf7b91ccc8e62.js": "/uniswap-info/precache-manifest.2f03e52668dbf766e30cf7b91ccc8e62.js",
   "service-worker.js": "/uniswap-info/service-worker.js"
 }
